@@ -23,8 +23,8 @@ func TestMoveShouldNotMoveOutsideOfBoundaries(t *testing.T) {
 	assert.Equal(t, 0, v.Y())
 
 	v.MoveBy(1024, 1024)
-	assert.Equal(t, 192, v.X())
-	assert.Equal(t, 392, v.Y())
+	assert.Equal(t, 224, v.X())
+	assert.Equal(t, 424, v.Y())
 
 }
 
@@ -60,9 +60,38 @@ func TestVisibleTiles(t *testing.T) {
 	log.Printf("viewport is now at %d/%d", vp.X(), vp.Y())
 	x1, y1, x2, y2 = vp.VisibleTiles()
 
-	assert.Equal(t, 27, x1)
-	assert.Equal(t, 27, y1)
+	assert.Equal(t, 28, x1)
+	assert.Equal(t, 28, y1)
 	assert.Equal(t, 31, x2)
 	assert.Equal(t, 31, y2)
+}
 
+func TestScreenToTile(t *testing.T) {
+
+	vp := NewViewport(100, 100, 0, 0, 32, 32)
+
+	tx, ty, _ := vp.ScreenToTile(0, 0)
+	assert.Equal(t, 0, tx)
+	assert.Equal(t, 0, ty)
+
+	tx, ty, _ = vp.ScreenToTile(95, 95)
+	assert.Equal(t, 2, tx)
+	assert.Equal(t, 2, ty)
+
+	tx, ty, _ = vp.ScreenToTile(99, 99)
+	assert.Equal(t, 3, tx)
+	assert.Equal(t, 3, ty)
+
+	vp.MoveBy(32, 32)
+
+	tx, ty, _ = vp.ScreenToTile(0, 0)
+	assert.Equal(t, 1, tx)
+	assert.Equal(t, 1, ty)
+
+	vp.MoveBy(892, 892) // bottom right corner
+	log.Printf("viewport is now at %d/%d", vp.X(), vp.Y())
+
+	tx, ty, _ = vp.ScreenToTile(99, 99)
+	assert.Equal(t, 31, tx)
+	assert.Equal(t, 31, ty)
 }

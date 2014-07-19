@@ -1,5 +1,11 @@
 package viewport
 
+import (
+	"errors"
+)
+
+var InvalidScreenCoords = errors.New("Screen coordinates are invalid")
+
 // Describes a viewport on an area. The viewport is usually smaller than the area
 // but that's not a necessity. The viewport has a position relative to the origin
 // (top left corner with coordinates 0/0) of the area and a width and height.
@@ -20,7 +26,8 @@ type Viewport interface {
 
 	// Viewport calculations:
 
-	VisibleTiles() (int, int, int, int) // Returns the top left and bottom right coordinates of the rectangle of visible tiles
+	VisibleTiles() (int, int, int, int)                  // Returns the top left and bottom right coordinates of the rectangle of visible tiles
+	ScreenToTile(x, y int) (tileX, tileY int, err error) // Translates the screen coordinates, relative to the viewport, to the coordinate of the tile at that position
 }
 
 func NewViewport(width, height, x, y, widthInTiles, heightInTiles int) Viewport {
@@ -36,8 +43,8 @@ func NewViewport(width, height, x, y, widthInTiles, heightInTiles int) Viewport 
 		height:        height,
 		areaWidth:     areaWidth,
 		areaHeight:    areaHeight,
-		maxX:          (areaWidth - width) - tileWidth,
-		maxY:          (areaHeight - height) - tileHeight,
+		maxX:          (areaWidth - width),
+		maxY:          (areaHeight - height),
 		tileWidth:     tileWidth,
 		tileHeight:    tileHeight,
 		widthInTiles:  widthInTiles,  // width of the area in tiles
@@ -97,6 +104,10 @@ func (v *viewportImpl) VisibleTiles() (minX, minY, maxX, maxY int) {
 	maxX = minInt(minX+v.visibleTilesX, v.widthInTiles-1)
 	maxY = minInt(minY+v.visibleTilesY, v.heightInTiles-1)
 	return minX, minY, maxX, maxY
+}
+
+func (v *viewportImpl) ScreenToTile(x, y int) (tileX, tileY int, err error) {
+	return (x + v.x) >> 5, (y + v.y) >> 5, nil
 }
 
 // Returns a the value if it is within the given lower or upper boundary. If the

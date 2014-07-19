@@ -34,6 +34,7 @@ func main() {
 
 	viewport := vp.NewViewport(screenWidth, screenHeight, 0, 0, m.Width(), m.Height())
 
+	mousePos := ""
 	dragging := false
 	running := true
 	for running {
@@ -56,6 +57,9 @@ func main() {
 				}
 
 			case *sdl.MouseMotionEvent:
+
+				tx, ty, _ := viewport.ScreenToTile(int(t.X), int(t.Y))
+				mousePos = fmt.Sprintf("@%d/%d, @tile %d/%d", t.X, t.Y, tx, ty)
 
 				if dragging {
 					viewport.MoveBy(int(-t.XRel), int(-t.YRel))
@@ -94,8 +98,8 @@ func main() {
 			r := tiled.NewRect(x1, y1, (x2 - x1), (y2 - y1))
 			subLayer := layer.Sub(r)
 
-			horizontalTiles := x2 - x1
-			verticalTiles := y2 - y1
+			horizontalTiles := x2 - x1 + 1
+			verticalTiles := y2 - y1 + 1
 
 			for y := 0; y < verticalTiles; y++ {
 				for x := 0; x < horizontalTiles; x++ {
@@ -116,6 +120,10 @@ func main() {
 
 					surface.FillRect(&rect, color)
 
+					coords := fmt.Sprintf("%d/%d", t.X(), t.Y())
+					s := font.RenderText_Solid(coords, sdl.Color{R: 255, G: 255, B: 255, A: 255})
+					s.Blit(&sdl.Rect{0, 0, 32, 32}, surface, &sdl.Rect{screenX, screenY, 32, 16})
+
 				}
 			}
 		}
@@ -124,6 +132,8 @@ func main() {
 		renderStatus(fmt.Sprintf("viewport: %d/%d", viewport.X(), viewport.Y()), font, surface)
 		a, b, c, d := viewport.VisibleTiles()
 		renderStatus(fmt.Sprintf("tiles: %d/%d -> %d/%d", a, b, c, d), font, surface)
+
+		renderStatus(mousePos, font, surface)
 
 		window.UpdateSurface()
 
