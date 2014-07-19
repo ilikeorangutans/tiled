@@ -37,6 +37,7 @@ func main() {
 	mousePos := ""
 	dragging := false
 	running := true
+	renderTileCoords := false
 	for running {
 
 		for event = sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
@@ -71,6 +72,8 @@ func main() {
 				switch t.Keysym.Sym {
 				case sdl.K_q:
 					running = false
+				case sdl.K_c:
+					renderTileCoords = !renderTileCoords
 				case sdl.K_LEFT:
 					viewport.MoveBy(-16, 0)
 
@@ -114,16 +117,18 @@ func main() {
 
 					var color uint32 = 0xffff0000
 
-					var red uint32 = uint32((t.X() * 2) << 8)
+					var red uint32 = uint32((255 - t.X() - t.Y()) << 16)
+					var green uint32 = uint32((t.X() * 2) << 8)
 					var blue uint32 = uint32(t.Y() * 2)
-					color = color + red + blue
+					color = color + red + green + blue
 
 					surface.FillRect(&rect, color)
 
-					coords := fmt.Sprintf("%d/%d", t.X(), t.Y())
-					s := font.RenderText_Solid(coords, sdl.Color{R: 255, G: 255, B: 255, A: 255})
-					s.Blit(&sdl.Rect{0, 0, 32, 32}, surface, &sdl.Rect{screenX, screenY, 32, 16})
-
+					if renderTileCoords {
+						coords := fmt.Sprintf("%d/%d", t.X(), t.Y())
+						s := font.RenderText_Solid(coords, sdl.Color{R: 255, G: 255, B: 255, A: 255})
+						s.Blit(&sdl.Rect{0, 0, 32, 32}, surface, &sdl.Rect{screenX, screenY, 32, 16})
+					}
 				}
 			}
 		}
