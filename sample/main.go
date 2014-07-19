@@ -46,7 +46,6 @@ func main() {
 				running = false
 
 			case *sdl.MouseButtonEvent:
-				log.Printf("Mouse button %d , state %d", t.Button, t.State)
 
 				if t.Button == 3 && t.State == 1 {
 					dragging = true
@@ -61,7 +60,6 @@ func main() {
 				if dragging {
 					viewport.MoveBy(int(-t.XRel), int(-t.YRel))
 
-					//log.Printf("viewport %d/%d", viewport.X(), viewport.Y())
 				}
 
 			case *sdl.KeyDownEvent:
@@ -80,7 +78,6 @@ func main() {
 					viewport.MoveBy(0, 16)
 				}
 
-				//log.Printf("Viewport is now at %d/%d", viewport.X(), viewport.Y())
 			}
 		}
 
@@ -95,7 +92,6 @@ func main() {
 			x1, y1, x2, y2 := viewport.VisibleTiles()
 
 			r := tiled.NewRect(x1, y1, (x2 - x1), (y2 - y1))
-			//log.Printf("viewport at %d/%d, rendering tiles %d/%d -> %d/%d with offset %d/%d", viewport.X(), viewport.Y(), r.X(), r.Y(), x2, y2, renderingXoffset, renderingYoffset)
 			subLayer := layer.Sub(r)
 
 			horizontalTiles := x2 - x1
@@ -106,10 +102,6 @@ func main() {
 
 					p := tiled.NewPoint(x, y)
 					t := subLayer.TileAt(p)
-
-					//if y < 2 && x < 2 {
-					//	log.Printf("Rendering first tile %d/%d at point %d/%d (x/y %d/%d), layer starts at %d/%d", t.X(), t.Y(), p.X(), p.Y(), x, y, subLayer.X(), subLayer.Y())
-					//}
 
 					screenX := int32(x*32) + renderingXoffset
 					screenY := int32(y*32) + renderingYoffset
@@ -124,9 +116,6 @@ func main() {
 
 					surface.FillRect(&rect, color)
 
-					//coords = fmt.Sprintf("%d/%d", x, y)
-					//s = font.RenderText_Solid(coords, sdl.Color{R: 255, G: 255, B: 255, A: 255})
-					//s.Blit(&sdl.Rect{0, 0, 32, 32}, surface, &sdl.Rect{screenX, screenY + 16, 32, 16})
 				}
 			}
 		}
