@@ -36,13 +36,13 @@ func NewViewport(width, height, x, y, widthInTiles, heightInTiles int) Viewport 
 		height:        height,
 		areaWidth:     areaWidth,
 		areaHeight:    areaHeight,
-		maxX:          (areaWidth - width),
-		maxY:          (areaHeight - height),
+		maxX:          (areaWidth - width) - tileWidth,
+		maxY:          (areaHeight - height) - tileHeight,
 		tileWidth:     tileWidth,
 		tileHeight:    tileHeight,
 		widthInTiles:  widthInTiles,  // width of the area in tiles
 		heightInTiles: heightInTiles, // height of the are in tiles
-		visibleTilesX: width>>5 + 1,  // number of tiles visible on the x-axis
+		visibleTilesX: width>>5 + 2,  // number of tiles visible on the x-axis
 		visibleTilesY: height>>5 + 2, // number of tiles visible on the y-axis
 	}
 }
