@@ -16,17 +16,20 @@ func LoadMap(filename string) (Map, error) {
 // Creates a new Map from the given TMX data
 func MapFromTMX(m *tmx.Map) Map {
 
+	tilesets := NewTilesetCatalog()
+
 	boundaries := NewRect(0, 0, m.Width, m.Height)
 
 	layers := make([]Layer, len(m.Layer))
 
 	for i := range m.Layer {
 		tmxLayer := m.Layer[i]
-		layers[i] = LayerFromTMX(boundaries, tmxLayer)
+		layers[i] = LayerFromTMX(boundaries, tilesets, tmxLayer)
 	}
 
 	return &tmxMap{
-		Rect:   boundaries,
-		layers: layers,
+		Rect:     boundaries,
+		layers:   layers,
+		tilesets: tilesets,
 	}
 }

@@ -9,16 +9,16 @@ import (
 // within these boundaries.
 // Map coordinates are always zero based.
 type Map interface {
-	Rect              // Embeds information about the position and size of the Map
-	Layers() []Layer  // Return all layers
-	Sub(Rect) Map     // Returns a subset of the map described by the given Rect
-	Tileset() Tileset // Returns the tileset associated with this map.
+	Rect                      // Embeds information about the position and size of the Map
+	Layers() []Layer          // Return all layers
+	Sub(Rect) Map             // Returns a subset of the map described by the given Rect
+	Tilesets() TilesetCatalog // Returns the tileset catalog associated with this map.
 }
 
 type tmxMap struct {
 	Rect
-	layers  []Layer
-	tileset Tileset
+	layers   []Layer
+	tilesets TilesetCatalog
 }
 
 func (m *tmxMap) Layers() []Layer {
@@ -38,8 +38,8 @@ func (m *tmxMap) Sub(r Rect) Map {
 	}
 }
 
-func (m *tmxMap) Tileset() Tileset {
-	return m.tileset
+func (m *tmxMap) Tilesets() TilesetCatalog {
+	return m.tilesets
 }
 
 func (m *tmxMap) String() string {

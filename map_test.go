@@ -46,7 +46,7 @@ func TestSubMap(t *testing.T) {
 	tile := layer.TileAt(NewPoint(0, 0))
 	assert.Equal(t, 0, tile.X())
 	assert.Equal(t, 0, tile.Y())
-	//assert.Equal(t, 0, tile.Type().Gid())
+	assert.Equal(t, 1, tile.Type().Gid())
 
 	sub = m.Sub(NewRect(1, 1, 5, 6))
 	assert.NotNil(t, sub)
@@ -71,4 +71,12 @@ func TestSubMap(t *testing.T) {
 	assert.Equal(t, 1, tile.X())
 	assert.Equal(t, 2, tile.Y())
 	//assert.Equal(t, 0, tile.Type().Gid())
+}
+
+func TestLoadMapTileset(t *testing.T) {
+	m, err := LoadMap("tmx/simple_map_10x10.tmx")
+	assert.Nil(t, err)
+
+	tilesets := m.Tilesets()
+	assert.NotNil(t, tilesets, "Map should have a tileset")
 }

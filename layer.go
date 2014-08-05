@@ -48,7 +48,7 @@ func (l *tmxLayer) Sub(rect Rect) Layer {
 }
 
 // Creates a new Layer instance from the given TMX data
-func LayerFromTMX(boundaries Rect, l tmx.Layer) Layer {
+func LayerFromTMX(boundaries Rect, tilesets TilesetCatalog, l tmx.Layer) Layer {
 
 	tiles := make([]Tile, Area(boundaries))
 
@@ -56,7 +56,7 @@ func LayerFromTMX(boundaries Rect, l tmx.Layer) Layer {
 	for i := range l.Data.Tiles {
 		x = i % boundaries.Width()
 		tmxTile := l.Data.Tiles[i]
-		tiles[i] = TileFromTMX(&tmxTile, NewPoint(x, y))
+		tiles[i] = TileFromTMX(&tmxTile, NewPoint(x, y), tilesets)
 
 		endOfRow := x%boundaries.Width() == boundaries.Width()-1
 		if endOfRow {
